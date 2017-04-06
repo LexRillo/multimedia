@@ -158,7 +158,7 @@ public class Example3D2 extends JFrame {
 
     public static void main(String[] args) {        
 
-	Example3D sg1 = new Example3D();
+	Example3D2 sg1 = new Example3D2();
 
     }
     
