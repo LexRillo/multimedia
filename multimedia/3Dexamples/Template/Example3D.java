@@ -101,14 +101,24 @@ public class Example3D extends JApplet {
 
     // create a "standard" universe using SimpleUniverse 
     public Example3D() {
+    	this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 	Container cp = getContentPane();
 	cp.setLayout(new BorderLayout());
 	Canvas3D c = new Canvas3D(SimpleUniverse.getPreferredConfiguration());
 	cp.add("Center", c);
 	SimpleUniverse u = new SimpleUniverse(c);
 	// call createSceneGraph method appearing above (***)
-	BranchGroup scene = createSceneGraph(u); 
+	BranchGroup scene = createSceneGraph(u);
+	u.getViewingPlatform().setNominalViewingTransform();
 	u.addBranchGraph(scene);
+	TransformGroup cameraTG = u.getViewingPlatform().
+            getViewPlatformTransform();
+	// starting postion of the viewing platform
+		Vector3f translate = new Vector3f(); 
+	      	Transform3D T3D = new Transform3D();
+	      	setTitle("I like trains");
+	        setSize(700,700);
+	        setVisible(true);
     }
     
     public static void main(String[] args) {        
