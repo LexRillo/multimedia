@@ -75,6 +75,7 @@ public class porprobar extends Applet {
 		tg.addChild(createLocomotor());
 		tg.addChild(createWheels());
 		tg.addChild(createTracks());
+		FPSAnimator translation = new FPSAnimator();
 		objRoot.addChild(tg);
 		objRoot.compile();
 		return objRoot;
