@@ -1,4 +1,4 @@
-//package cw4;
+package cw4;
 import java.applet.*;
 import java.awt.*;
 
@@ -71,11 +71,9 @@ public class porprobar extends Applet {
 		t3d.rotZ(-(Math.PI/2));
 		tg.setTransform(t3d);
 		
-		
-		tg.addChild(createLocomotor());
-		tg.addChild(createWheels());
+		tg.addChild(createMovingTrain());
 		tg.addChild(createTracks());
-		FPSAnimator translation = new FPSAnimator();
+		
 		objRoot.addChild(tg);
 		objRoot.compile();
 		return objRoot;
@@ -99,6 +97,8 @@ public class porprobar extends Applet {
 		  ap.setMaterial(ma);
 		  return ap;
 	}
+	
+	
 	
 	private BranchGroup createLocomotor() {
 	
@@ -162,9 +162,36 @@ public class porprobar extends Applet {
 	  return objRoot;
 	}
 	
+	private BranchGroup createWheel(){
+		BranchGroup objRoot = new BranchGroup();
+		BoundingSphere bounds =
+			    new BoundingSphere(new Point3d(0.0,0.0,0.0), 1000);
+			
+		TransformGroup tg = new TransformGroup();
+		tg.setCapability(TransformGroup.ALLOW_TRANSFORM_WRITE);
+		Transform3D t3d = new Transform3D();
+		Alpha rotationAlpha1 = new Alpha(-1, 4000);
+		RotationInterpolator rotator1 = new RotationInterpolator(rotationAlpha1,
+				  tg, t3d, 0.0f, (float) -(Math.PI * (2.0f)));
+		  rotator1.setSchedulingBounds(bounds);
+		  Appearance ap_wheel1 = createAppearance(new Color3f(1.0f, 0.3f, 0.0f));
+		  
+		  tg.addChild(rotator1);
+		  tg.addChild(new Cylinder(0.1f, 1.0f, ap_wheel1));
+		  
+		  objRoot.addChild(tg);
+		  
+		  objRoot.compile();
+		  return objRoot;
+		  
+	}
+	
+	
 	private BranchGroup createWheels(){
 		
 	BranchGroup objRoot = new BranchGroup();
+	BoundingSphere bounds =
+		    new BoundingSphere(new Point3d(0.0,0.0,0.0), 1000);
 		
 	TransformGroup tg = new TransformGroup();
 	Transform3D t3d = new Transform3D();
@@ -173,18 +200,15 @@ public class porprobar extends Applet {
 	tg.setTransform(t3d);
 	
 	  //wheel1
-	  TransformGroup tg_wheel1 = new TransformGroup();
-	  Transform3D t3d_wheel1 = new Transform3D();
-	  
-	  //rotating pi/2
-	  t3d_wheel1.rotX(Math.PI/2);
-	  t3d_wheel1.setTranslation(new Vector3d(0.6, 0.9, 0.0));
-	  tg_wheel1.setTransform(t3d_wheel1);
-		
-	  Appearance ap_wheel1 = createAppearance(new Color3f(1.0f, 0.3f, 0.0f));
-	  //probably need to change longitude of it 1.5 -> 0.5
-	  tg_wheel1.addChild(new Cylinder(0.1f, 1.5f, ap_wheel1));
-	  
+	  TransformGroup tg_wheel1 = new TransformGroup();	  
+      Transform3D t3d_wheel1 = new Transform3D();
+      
+      t3d_wheel1.rotX(Math.PI/2);
+      t3d_wheel1.setTranslation(new Vector3d(0.6, 0.9, 0.0));
+      tg_wheel1.setTransform(t3d_wheel1);
+      
+      tg_wheel1.addChild(createWheel());
+    		  
 	  //wheel2
 	  TransformGroup tg_wheel2 = new TransformGroup();
 	  Transform3D t3d_wheel2 = new Transform3D();
@@ -193,8 +217,7 @@ public class porprobar extends Applet {
 	  t3d_wheel2.setTranslation(new Vector3d(0.6, -0.1, 0.0));
 	  tg_wheel2.setTransform(t3d_wheel2);
 	  
-	  Appearance ap_wheel2 = createAppearance(new Color3f(1.0f, 0.3f, 0.0f));
-	  tg_wheel2.addChild(new Cylinder(0.1f, 1.5f, ap_wheel2));
+	  tg_wheel2.addChild(createWheel());
 	  //wheel3
 	  TransformGroup tg_wheel3 = new TransformGroup();
 	  Transform3D t3d_wheel3 = new Transform3D();
@@ -203,8 +226,7 @@ public class porprobar extends Applet {
 	  t3d_wheel3.setTranslation(new Vector3d(0.6, -1.4, 0.0));
 	  tg_wheel3.setTransform(t3d_wheel3);
 	  
-	  Appearance ap_wheel3 = createAppearance(new Color3f(1.0f, 0.3f, 0.0f));
-	  tg_wheel3.addChild(new Cylinder(0.1f, 1.5f, ap_wheel3));
+	  tg_wheel3.addChild(createWheel());
 	  
 	  tg.addChild(tg_wheel1);
 	  tg.addChild(tg_wheel2);
@@ -216,6 +238,41 @@ public class porprobar extends Applet {
 	  
 	}
 	
+	private BranchGroup createMovingTrain(){
+		BranchGroup objRoot = new BranchGroup();
+		BoundingSphere bounds = new BoundingSphere(new Point3d(), 10000.0);
+		
+		TransformGroup tg = new TransformGroup();
+		Transform3D t3d = new Transform3D();
+		
+		t3d.setTranslation(new Vector3d(0.0, 0.0, 0.0));
+		tg.setTransform(t3d);
+		
+		TransformGroup tg_train = new TransformGroup();
+		
+		tg_train.setCapability(TransformGroup.ALLOW_TRANSFORM_WRITE);
+		Alpha trainAlpha = new Alpha(2, 3000);
+		//trainAlpha.setStartTime(200);
+		Transform3D t3d_train = new Transform3D();
+		t3d_train.setTranslation(new Vector3d(0.0, 0.0, 0.0));
+		
+		PositionInterpolator moveR = new PositionInterpolator(trainAlpha,tg_train,t3d_train, 0.0f, 100.0f);
+		moveR.setSchedulingBounds(bounds);
+		
+		tg_train.setTransform(t3d_train);
+	    
+	    tg.addChild(createLocomotor());
+		tg.addChild(createWheels());
+//		Appearance ap_wheel1 = createAppearance(new Color3f(1.0f, 0.3f, 0.0f));
+//		tg.addChild(new Box(2f, 2f, 2f, ap_wheel1));
+		tg_train.addChild(moveR);
+		tg.addChild(tg_train);
+	   		
+		objRoot.addChild(tg);
+		objRoot.compile();
+		return objRoot;
+	}
+	
 	private BranchGroup createTracks(){
 
 	 BranchGroup objRoot = new BranchGroup();
@@ -225,24 +282,28 @@ public class porprobar extends Applet {
 
 	 t3d.setTranslation(new Vector3d(0.0, 0.0, -15.0));
 	 tg.setTransform(t3d);
+	 
+	 
 	 //first track
 	 TransformGroup tg_track1 = new TransformGroup();
 	 Transform3D t3d_track1 = new Transform3D();
 	  
-	 t3d_track1.setTranslation(new Vector3d(0.78, 40.0, 0.5));
+	 t3d_track1.setTranslation(new Vector3d(0.78, 95.0, 0.5));
 	 tg_track1.setTransform(t3d_track1);
 	  
 	 Appearance ap_track1 = createAppearance(new Color3f(1.0f, 0.3f, 0.0f));
 	 tg_track1.addChild(new Box(0.08f, 100.0f, 0.05f, ap_track1));
+	 
+	 
 	 //second track
 	 TransformGroup tg_track2 = new TransformGroup();
 	 Transform3D t3d_track2 = new Transform3D();
 	  
-	 t3d_track2.setTranslation(new Vector3d(0.78, 40.0, -0.5));
+	 t3d_track2.setTranslation(new Vector3d(0.78, 95.0, -0.5));
 	 tg_track2.setTransform(t3d_track2);
 	  
 	 Appearance ap_track2 = createAppearance(new Color3f(1.0f, 0.3f, 0.0f));
-	 tg_track2.addChild(new Box(0.08f, 100.0f, 0.5f, ap_track2));
+	 tg_track2.addChild(new Box(0.08f, 100.0f, 0.05f, ap_track2));
 	 
 	 //maybe I can add some ends to the tracks
 	 
@@ -254,7 +315,11 @@ public class porprobar extends Applet {
 	 objRoot.compile();
 	 return objRoot;
 	}
+
 	
+//	private BranchGroup createRock(){
+//		put at a distance of 190?
+//	}
 	private Light createLight() {
 		  DirectionalLight light = new DirectionalLight(true, new Color3f(1.0f,
 		    1.0f, 1.0f), new Vector3f(-0.3f, 0.2f, -1.0f));
