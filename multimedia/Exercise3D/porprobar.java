@@ -251,20 +251,21 @@ public class porprobar extends Applet {
 		TransformGroup tg_train = new TransformGroup();
 		
 		tg_train.setCapability(TransformGroup.ALLOW_TRANSFORM_WRITE);
-		Alpha trainAlpha = new Alpha(2, 3000);
+		Alpha trainAlpha = new Alpha(1, 30000);
 		//trainAlpha.setStartTime(200);
 		Transform3D t3d_train = new Transform3D();
 		t3d_train.setTranslation(new Vector3d(0.0, 0.0, 0.0));
+		t3d_train.rotZ((Math.PI/2));
 		
-		PositionInterpolator moveR = new PositionInterpolator(trainAlpha,tg_train,t3d_train, 0.0f, 100.0f);
+		PositionInterpolator moveR = new PositionInterpolator(trainAlpha,tg_train,t3d_train, 0.0f, 190.0f);
 		moveR.setSchedulingBounds(bounds);
 		
 		tg_train.setTransform(t3d_train);
 	    
-	    tg.addChild(createLocomotor());
-		tg.addChild(createWheels());
+	    tg_train.addChild(createLocomotor());
+		tg_train.addChild(createWheels());
 //		Appearance ap_wheel1 = createAppearance(new Color3f(1.0f, 0.3f, 0.0f));
-//		tg.addChild(new Box(2f, 2f, 2f, ap_wheel1));
+//		tg_train.addChild(new Box(2f, 2f, 2f, ap_wheel1));
 		tg_train.addChild(moveR);
 		tg.addChild(tg_train);
 	   		
@@ -305,18 +306,85 @@ public class porprobar extends Applet {
 	 Appearance ap_track2 = createAppearance(new Color3f(1.0f, 0.3f, 0.0f));
 	 tg_track2.addChild(new Box(0.08f, 100.0f, 0.05f, ap_track2));
 	 
-	 //maybe I can add some ends to the tracks
+	 
+	 //position start of tracks
+	 TransformGroup tg_startoftrack = new TransformGroup();
+	 Transform3D t3d_startoftrack = new Transform3D();
+	  
+	 t3d_startoftrack.setTranslation(new Vector3d(0.0, -4.95, 0.0));
+	 tg_startoftrack.setTransform(t3d_startoftrack);
+	
+	 tg_startoftrack.addChild(createEndsOfTrack());
+	 
+	 //position end of tracks
+	 TransformGroup tg_endoftrack = new TransformGroup();
+	 Transform3D t3d_endoftrack = new Transform3D();
+	  
+	 t3d_endoftrack.setTranslation(new Vector3d(0.0, 194.95, 0.0));
+	 tg_endoftrack.setTransform(t3d_endoftrack);
+	
+	 tg_endoftrack.addChild(createEndsOfTrack());
+	 
+	 
 	 
 	 tg.addChild(tg_track1);
 	 tg.addChild(tg_track2);
-	 //tg.addChild();
+	 tg.addChild(tg_startoftrack);
+	 tg.addChild(tg_endoftrack);
 	 objRoot.addChild(tg);
 	  
 	 objRoot.compile();
 	 return objRoot;
 	}
 
-	
+	private BranchGroup createEndsOfTrack(){
+		BranchGroup objRoot = new BranchGroup();
+
+		 TransformGroup tg = new TransformGroup();
+		 Transform3D t3d = new Transform3D();
+
+		 t3d.setTranslation(new Vector3d(0.0, 0.0, 0.0));
+		 tg.setTransform(t3d);
+		 
+	     //stands
+		 //1
+		 TransformGroup tg_stand1 = new TransformGroup();
+		 Transform3D t3d_stand1 = new Transform3D();
+		  
+		 t3d_stand1.setTranslation(new Vector3d(0.2, 0.0, 0.5));//(0.2, -4.95, 0.5)
+		 tg_stand1.setTransform(t3d_stand1);
+		  
+		 Appearance ap_stand = createAppearance(new Color3f(1.0f, 0.3f, 0.0f));
+		 tg_stand1.addChild(new Box(0.5f, 0.05f, 0.05f, ap_stand));
+		 
+		 //2
+		 TransformGroup tg_stand2 = new TransformGroup();
+		 Transform3D t3d_stand2 = new Transform3D();
+		  
+		 t3d_stand2.setTranslation(new Vector3d(0.2, 0.0, -0.5));//(0.2, -4.95, -0.5)
+		 tg_stand2.setTransform(t3d_stand2);
+
+		 tg_stand2.addChild(new Box(0.5f, 0.05f, 0.05f, ap_stand));
+		 
+		 //stopper
+		 TransformGroup tg_stopper = new TransformGroup();
+		 Transform3D t3d_stopper = new Transform3D();
+		  
+		 t3d_stopper.setTranslation(new Vector3d(0.0, 0.0, 0.0));//(0.2, -4.95, -0.5)
+		 tg_stopper.setTransform(t3d_stopper);
+		 
+		 Appearance ap_stopper = createAppearance(new Color3f(1.0f, 0.3f, 0.0f));
+		 tg_stopper.addChild(new Box(0.3f, 0.05f, 0.5f, ap_stopper));
+		 
+		 
+		 tg.addChild(tg_stand1);
+		 tg.addChild(tg_stand2);
+		 tg.addChild(tg_stopper);
+		 
+		 objRoot.addChild(tg);		  
+		 objRoot.compile();
+		 return objRoot;
+	}
 //	private BranchGroup createRock(){
 //		put at a distance of 190?
 //	}
