@@ -354,7 +354,7 @@ public class porprobar extends Applet {
 		 t3d_stand1.setTranslation(new Vector3d(0.2, 0.0, 0.5));//(0.2, -4.95, 0.5)
 		 tg_stand1.setTransform(t3d_stand1);
 		  
-		 Appearance ap_stand = createAppearance(new Color3f(1.0f, 0.3f, 0.0f));
+		 Appearance ap_stand = createAppearance(new Color3f(0.45f, 0.21f, 0.0f));
 		 tg_stand1.addChild(new Box(0.5f, 0.05f, 0.05f, ap_stand));
 		 
 		 //2
@@ -373,7 +373,7 @@ public class porprobar extends Applet {
 		 t3d_stopper.setTranslation(new Vector3d(0.0, 0.0, 0.0));//(0.2, -4.95, -0.5)
 		 tg_stopper.setTransform(t3d_stopper);
 		 
-		 Appearance ap_stopper = createAppearance(new Color3f(1.0f, 0.3f, 0.0f));
+		 Appearance ap_stopper = createAppearance(new Color3f(0.98f, 0.2f, 0.0f));
 		 tg_stopper.addChild(new Box(0.3f, 0.05f, 0.5f, ap_stopper));
 		 
 		 
