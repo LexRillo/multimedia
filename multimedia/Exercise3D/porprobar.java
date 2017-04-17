@@ -117,7 +117,7 @@ public class porprobar extends Applet {
 	  t3d_sp.setTranslation(new Vector3d(0.0, 1.0, 0.0));
 	  tg_sp.setTransform(t3d_sp);
 	
-	  Appearance ap_sp = createAppearance(new Color3f(1.0f, 0.3f, 0.0f));
+	  Appearance ap_sp = createAppearance(new Color3f(0.04f, 0.34f, 0.93f));
 	  tg_sp.addChild(new Sphere(0.5f, ap_sp));
 	  
 	  //main body of the train  
@@ -127,7 +127,7 @@ public class porprobar extends Applet {
 	  t3d_cilinder.setTranslation(new Vector3d(0.0, 0.0, 0.0));
 	  tg_cilinder.setTransform(t3d_cilinder);
 	  
-	  Appearance ap_cilinder = createAppearance(new Color3f(1.0f, 0.3f, 0.0f));
+	  Appearance ap_cilinder = createAppearance(new Color3f(0.04f, 0.34f, 0.93f));
 	  tg_cilinder.addChild(new Cylinder(0.5f, 2.0f, ap_cilinder));
 	  
 	  //Cabin of locomotor
@@ -137,7 +137,7 @@ public class porprobar extends Applet {
 	  t3d_cube.setTranslation(new Vector3d(-0.2, -1.0, 0.0));
 	  tg_cube.setTransform(t3d_cube);
 	  
-	  Appearance ap_cube = createAppearance(new Color3f(1.0f, 0.3f, 0.0f), 85.0f);
+	  Appearance ap_cube = createAppearance(new Color3f(0.04f, 0.34f, 0.93f), 85.0f);
 	  tg_cube.addChild(new Box(0.7f, 0.5f, 0.5f, ap_cube));
 	  
 	  //Chimney
@@ -147,7 +147,7 @@ public class porprobar extends Applet {
 	  t3d_cone.setTranslation(new Vector3d(-0.6, 0.9, 0.0));
 	  tg_cone.setTransform(t3d_cone);
 	  
-	  Appearance ap_cone = createAppearance(new Color3f(1.0f, 0.3f, 0.0f), 30.0f);
+	  Appearance ap_cone = createAppearance(new Color3f(0.04f, 0.34f, 0.93f), 30.0f);
 	  tg_cone.addChild(new Cone(0.15f, 0.5f, ap_cone));
 	  
 	  
@@ -292,7 +292,7 @@ public class porprobar extends Applet {
 	 t3d_track1.setTranslation(new Vector3d(0.78, 95.0, 0.5));
 	 tg_track1.setTransform(t3d_track1);
 	  
-	 Appearance ap_track1 = createAppearance(new Color3f(1.0f, 0.3f, 0.0f));
+	 Appearance ap_track1 = createAppearance(new Color3f(0.24f, 0.24f, 0.24f));
 	 tg_track1.addChild(new Box(0.08f, 100.0f, 0.05f, ap_track1));
 	 
 	 
@@ -303,7 +303,7 @@ public class porprobar extends Applet {
 	 t3d_track2.setTranslation(new Vector3d(0.78, 95.0, -0.5));
 	 tg_track2.setTransform(t3d_track2);
 	  
-	 Appearance ap_track2 = createAppearance(new Color3f(1.0f, 0.3f, 0.0f));
+	 Appearance ap_track2 = createAppearance(new Color3f(0.24f, 0.24f, 0.24f));
 	 tg_track2.addChild(new Box(0.08f, 100.0f, 0.05f, ap_track2));
 	 
 	 
