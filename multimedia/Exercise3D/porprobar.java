@@ -8,6 +8,9 @@ import javax.vecmath.*;
 
 import com.sun.j3d.utils.applet.MainFrame;
 import com.sun.j3d.utils.universe.SimpleUniverse;
+
+import cw4.movementtrial.CollisionBehaviour;
+
 import com.sun.j3d.utils.universe.PlatformGeometry;
 import com.sun.j3d.utils.behaviors.keyboard.*;
 
@@ -73,11 +76,14 @@ public class porprobar extends Applet {
 		
 		tg.addChild(createMovingTrain());
 		tg.addChild(createTracks());
+		tg.addChild(createRock());
 		
 		objRoot.addChild(tg);
 		objRoot.compile();
 		return objRoot;
 	}
+	
+	
 	private Appearance createAppearance(Color3f col) {
 	  Appearance ap = new Appearance();
 	  Material ma = new Material();
@@ -85,7 +91,7 @@ public class porprobar extends Applet {
 	  ma.setEmissiveColor(col);
 	  ap.setMaterial(ma);
 	  return ap;
-	 }
+	}
 	
 	private Appearance createAppearance(Color3f col, float shine) {
 		  Appearance ap = new Appearance();
@@ -114,7 +120,7 @@ public class porprobar extends Applet {
 	  TransformGroup tg_sp = new TransformGroup();
 	  Transform3D t3d_sp = new Transform3D();
 	  
-	  t3d_sp.setTranslation(new Vector3d(0.0, 1.0, 0.0));
+	  t3d_sp.setTranslation(new Vector3d(0.0, 1.05, 0.0));
 	  tg_sp.setTransform(t3d_sp);
 	
 	  Appearance ap_sp = createAppearance(new Color3f(0.04f, 0.34f, 0.93f));
@@ -124,11 +130,11 @@ public class porprobar extends Applet {
 	  TransformGroup tg_cilinder = new TransformGroup();
 	  Transform3D t3d_cilinder = new Transform3D();
 	
-	  t3d_cilinder.setTranslation(new Vector3d(0.0, 0.0, 0.0));
+	  t3d_cilinder.setTranslation(new Vector3d(0.0, 0.4, 0.0));
 	  tg_cilinder.setTransform(t3d_cilinder);
 	  
 	  Appearance ap_cilinder = createAppearance(new Color3f(0.04f, 0.34f, 0.93f));
-	  tg_cilinder.addChild(new Cylinder(0.5f, 2.0f, ap_cilinder));
+	  tg_cilinder.addChild(new Cylinder(0.5f, 1.3f, ap_cilinder));
 	  
 	  //Cabin of locomotor
 	  TransformGroup tg_cube = new TransformGroup();
@@ -150,11 +156,22 @@ public class porprobar extends Applet {
 	  Appearance ap_cone = createAppearance(new Color3f(0.04f, 0.34f, 0.93f), 30.0f);
 	  tg_cone.addChild(new Cone(0.15f, 0.5f, ap_cone));
 	  
+	  //uniting body cone
+	  TransformGroup tg_ubc = new TransformGroup();
+	  Transform3D t3d_ubc = new Transform3D();
+	  t3d_ubc.rotZ(-(Math.PI));
+	  t3d_ubc.setTranslation(new Vector3d(0.0, -0.85, 0.0));
+	  tg_ubc.setTransform(t3d_ubc);
+	  
+	  Appearance ap_ubc = createAppearance(new Color3f(0.9f, 0.9f, 0.0f), 60.0f);
+	  tg_ubc.addChild(new Cone(0.5f, 1.2f, ap_ubc));
+	  
 	  
 	  tg.addChild(tg_sp);
 	  tg.addChild(tg_cilinder);
 	  tg.addChild(tg_cube);
 	  tg.addChild(tg_cone);
+	  tg.addChild(tg_ubc);
 	  objRoot.addChild(tg);
 	  
 	  objRoot.addChild(createLight());
@@ -177,7 +194,7 @@ public class porprobar extends Applet {
 		  Appearance ap_wheel1 = createAppearance(new Color3f(1.0f, 0.3f, 0.0f));
 		  
 		  tg.addChild(rotator1);
-		  tg.addChild(new Cylinder(0.1f, 1.0f, ap_wheel1));
+		  tg.addChild(new Cylinder(0.15f, 1.0f, ap_wheel1));
 		  
 		  objRoot.addChild(tg);
 		  
@@ -204,7 +221,7 @@ public class porprobar extends Applet {
       Transform3D t3d_wheel1 = new Transform3D();
       
       t3d_wheel1.rotX(Math.PI/2);
-      t3d_wheel1.setTranslation(new Vector3d(0.6, 0.9, 0.0));
+      t3d_wheel1.setTranslation(new Vector3d(0.65, 0.9, 0.0));
       tg_wheel1.setTransform(t3d_wheel1);
       
       tg_wheel1.addChild(createWheel());
@@ -214,7 +231,7 @@ public class porprobar extends Applet {
 	  Transform3D t3d_wheel2 = new Transform3D();
 	  
 	  t3d_wheel2.rotX(Math.PI/2);
-	  t3d_wheel2.setTranslation(new Vector3d(0.6, -0.1, 0.0));
+	  t3d_wheel2.setTranslation(new Vector3d(0.65, -0.1, 0.0));
 	  tg_wheel2.setTransform(t3d_wheel2);
 	  
 	  tg_wheel2.addChild(createWheel());
@@ -223,7 +240,7 @@ public class porprobar extends Applet {
 	  Transform3D t3d_wheel3 = new Transform3D();
 	  
 	  t3d_wheel3.rotX(Math.PI/2);
-	  t3d_wheel3.setTranslation(new Vector3d(0.6, -1.4, 0.0));
+	  t3d_wheel3.setTranslation(new Vector3d(0.65, -1.4, 0.0));
 	  tg_wheel3.setTransform(t3d_wheel3);
 	  
 	  tg_wheel3.addChild(createWheel());
@@ -251,8 +268,7 @@ public class porprobar extends Applet {
 		TransformGroup tg_train = new TransformGroup();
 		
 		tg_train.setCapability(TransformGroup.ALLOW_TRANSFORM_WRITE);
-		Alpha trainAlpha = new Alpha(1, 30000);
-		//trainAlpha.setStartTime(200);
+		Alpha trainAlpha = new Alpha(1, 20000);
 		Transform3D t3d_train = new Transform3D();
 		t3d_train.setTranslation(new Vector3d(0.0, 0.0, 0.0));
 		t3d_train.rotZ((Math.PI/2));
@@ -261,7 +277,6 @@ public class porprobar extends Applet {
 		moveR.setSchedulingBounds(bounds);
 		
 		tg_train.setTransform(t3d_train);
-	    
 	    tg_train.addChild(createLocomotor());
 		tg_train.addChild(createWheels());
 //		Appearance ap_wheel1 = createAppearance(new Color3f(1.0f, 0.3f, 0.0f));
@@ -289,7 +304,7 @@ public class porprobar extends Applet {
 	 TransformGroup tg_track1 = new TransformGroup();
 	 Transform3D t3d_track1 = new Transform3D();
 	  
-	 t3d_track1.setTranslation(new Vector3d(0.78, 95.0, 0.5));
+	 t3d_track1.setTranslation(new Vector3d(0.88, 95.0, 0.5));
 	 tg_track1.setTransform(t3d_track1);
 	  
 	 Appearance ap_track1 = createAppearance(new Color3f(0.24f, 0.24f, 0.24f));
@@ -300,7 +315,7 @@ public class porprobar extends Applet {
 	 TransformGroup tg_track2 = new TransformGroup();
 	 Transform3D t3d_track2 = new Transform3D();
 	  
-	 t3d_track2.setTranslation(new Vector3d(0.78, 95.0, -0.5));
+	 t3d_track2.setTranslation(new Vector3d(0.88, 95.0, -0.5));
 	 tg_track2.setTransform(t3d_track2);
 	  
 	 Appearance ap_track2 = createAppearance(new Color3f(0.24f, 0.24f, 0.24f));
@@ -351,7 +366,7 @@ public class porprobar extends Applet {
 		 TransformGroup tg_stand1 = new TransformGroup();
 		 Transform3D t3d_stand1 = new Transform3D();
 		  
-		 t3d_stand1.setTranslation(new Vector3d(0.2, 0.0, 0.5));//(0.2, -4.95, 0.5)
+		 t3d_stand1.setTranslation(new Vector3d(0.3, 0.0, 0.5));
 		 tg_stand1.setTransform(t3d_stand1);
 		  
 		 Appearance ap_stand = createAppearance(new Color3f(0.45f, 0.21f, 0.0f));
@@ -361,7 +376,7 @@ public class porprobar extends Applet {
 		 TransformGroup tg_stand2 = new TransformGroup();
 		 Transform3D t3d_stand2 = new Transform3D();
 		  
-		 t3d_stand2.setTranslation(new Vector3d(0.2, 0.0, -0.5));//(0.2, -4.95, -0.5)
+		 t3d_stand2.setTranslation(new Vector3d(0.3, 0.0, -0.5));
 		 tg_stand2.setTransform(t3d_stand2);
 
 		 tg_stand2.addChild(new Box(0.5f, 0.05f, 0.05f, ap_stand));
@@ -370,7 +385,7 @@ public class porprobar extends Applet {
 		 TransformGroup tg_stopper = new TransformGroup();
 		 Transform3D t3d_stopper = new Transform3D();
 		  
-		 t3d_stopper.setTranslation(new Vector3d(0.0, 0.0, 0.0));//(0.2, -4.95, -0.5)
+		 t3d_stopper.setTranslation(new Vector3d(0.1, 0.0, 0.0));
 		 tg_stopper.setTransform(t3d_stopper);
 		 
 		 Appearance ap_stopper = createAppearance(new Color3f(0.98f, 0.2f, 0.0f));
@@ -385,9 +400,114 @@ public class porprobar extends Applet {
 		 objRoot.compile();
 		 return objRoot;
 	}
-//	private BranchGroup createRock(){
-//		put at a distance of 190?
-//	}
+	
+	private BranchGroup createRock(){
+		
+		BranchGroup objRoot = new BranchGroup();
+		BoundingSphere bounds = new BoundingSphere(new Point3d(0.0,0.0,0.0), 1000);
+			
+		TransformGroup tg = new TransformGroup();
+		Transform3D t3d = new Transform3D();
+			
+		t3d.setTranslation(new Vector3d(0.8, 192.2, -15.0));
+		tg.setTransform(t3d);
+		
+		
+		TransformGroup tg_rock = new TransformGroup();
+		  tg_rock.setCapability(TransformGroup.ALLOW_TRANSFORM_WRITE);
+		  Transform3D t3d_rock = new Transform3D();
+		  t3d_rock.rotX((Math.PI/8));
+		  t3d_rock.rotY(-(Math.PI/2));
+		  t3d_rock.setTranslation(new Vector3d(0.0, 0.0, 0.0));
+		  tg_rock.setTransform(t3d_rock);
+		  
+		Appearance ap_rock = createAppearance(new Color3f(0.48f, 0.27f, 0.0f));
+		Appearance ap_rock2 = createAppearance(new Color3f(1.0f, 0.0f, 0.0f));
+		
+		Point3d[] vertexCoordinates = {
+			new Point3d(-1.0,-1.0,0.0),
+			new Point3d(1.0,-1.0,0.0),
+			new Point3d(0.0,1.0,0.0),
+			new Point3d(0.0,0.0,2.0)
+		};
+		
+		int triangles[] = {
+				0,2,1,  // Base – vertices[0], vertices[2], vertices[1]
+				0,1,3,  // Side 1
+				2,0,3,  // Side 2
+				1,2,3   // Side 3
+		};
+		
+		GeometryInfo gi = new GeometryInfo(GeometryInfo.TRIANGLE_ARRAY);
+		gi.setCoordinates(vertexCoordinates);
+		gi.setCoordinateIndices(triangles);
+		
+		NormalGenerator ng = new NormalGenerator();
+		ng.generateNormals(gi);
+		
+		GeometryArray ga = gi.getGeometryArray();
+		Shape3D tetrahedron = new Shape3D(ga,ap_rock);
+		
+		//collision
+		Shape3D redrock = new Shape3D(ga,ap_rock2);
+		
+		Switch colourSwitch = new Switch();
+	    colourSwitch.setCapability(Switch.ALLOW_SWITCH_WRITE);
+	    colourSwitch.addChild(redrock); // child 0
+	    colourSwitch.addChild(tetrahedron); // child 1
+	    colourSwitch.setWhichChild(1);
+	    tg_rock.addChild(colourSwitch);
+	    
+	  //The CollisionBounds for the spheres. 
+	    colourSwitch.setCollisionBounds(new BoundingSphere(new Point3d(0.0,0.0,0.0),0.01f)); 
+	    //Enabled for collision purposes
+	    colourSwitch.setCollidable(true);
+	    
+	    CollisionBehaviour scb = new CollisionBehaviour(tetrahedron, colourSwitch,bounds);
+	    tg.addChild(scb);
+		tg.addChild(tg_rock);		
+		
+		objRoot.addChild(tg);
+		  
+		  objRoot.compile();
+		  return objRoot;
+	}
+
+
+	class CollisionBehaviour extends Behavior {
+		
+		public WakeupOnCollisionEntry i_and_pS_criterion;
+
+		public Shape3D locom;
+		
+		public Switch colourswitch;
+		
+		public CollisionBehaviour(Shape3D thlocom, Switch theSwitch, Bounds theBounds){
+			locom = thlocom;
+	        colourswitch = theSwitch;
+	        setSchedulingBounds(theBounds);
+	    }
+		
+		public void initialize(){
+			
+			i_and_pS_criterion = new WakeupOnCollisionEntry(locom);
+			wakeupOn(i_and_pS_criterion);
+		}
+		
+		public void processStimulus(Enumeration criteria){
+			while (criteria.hasMoreElements())
+		      {
+		          WakeupCriterion theCriterion = (WakeupCriterion) criteria.nextElement();
+		          if (theCriterion instanceof WakeupOnCollisionEntry){
+		        	  colourswitch.setWhichChild(0);
+		        	  
+		        	  System.out.println("CRASH!");
+		          }
+		      }
+		}
+	}
+	
+	
 	private Light createLight() {
 		  DirectionalLight light = new DirectionalLight(true, new Color3f(1.0f,
 		    1.0f, 1.0f), new Vector3f(-0.3f, 0.2f, -1.0f));

@@ -8,6 +8,9 @@ import javax.vecmath.*;
 
 import com.sun.j3d.utils.applet.MainFrame;
 import com.sun.j3d.utils.universe.SimpleUniverse;
+
+import cw4.movementtrial.CollisionBehaviour;
+
 import com.sun.j3d.utils.universe.PlatformGeometry;
 import com.sun.j3d.utils.behaviors.keyboard.*;
 
@@ -264,8 +267,9 @@ public class porprobar extends Applet {
 		moveR.setSchedulingBounds(bounds);
 		
 		tg_train.setTransform(t3d_train);
-	    
-	    tg_train.addChild(createLocomotor());
+		BranchGroup blueloco = createLocomotor();
+		BranchGroup redloco = createLocomotor();
+	    tg_train.addChild(blueloco);
 		tg_train.addChild(createWheels());
 //		Appearance ap_wheel1 = createAppearance(new Color3f(1.0f, 0.3f, 0.0f));
 //		tg_train.addChild(new Box(2f, 2f, 2f, ap_wheel1));
@@ -397,43 +401,62 @@ public class porprobar extends Applet {
 		TransformGroup tg = new TransformGroup();
 		Transform3D t3d = new Transform3D();
 			
-		t3d.setTranslation(new Vector3d(-0.1, 192.4, -15.0));
+		t3d.setTranslation(new Vector3d(0.7, 192.2, -15.0));
 		tg.setTransform(t3d);
 		
 		
 		TransformGroup tg_rock = new TransformGroup();
 		  tg_rock.setCapability(TransformGroup.ALLOW_TRANSFORM_WRITE);
 		  Transform3D t3d_rock = new Transform3D();
-		  t3d_rock.rotX((Math.PI/4));
+		  t3d_rock.rotX((Math.PI/8));
+		  t3d_rock.rotY(-(Math.PI/2));
 		  t3d_rock.setTranslation(new Vector3d(0.0, 0.0, 0.0));
 		  tg_rock.setTransform(t3d_rock);
 		  
 		Appearance ap_rock = createAppearance(new Color3f(0.48f, 0.27f, 0.0f));
+		Appearance ap_rock2 = createAppearance(new Color3f(1.0f, 0.0f, 0.0f));
 		
-		Point3d[] vertexCoordinates =
-			{
+		Point3d[] vertexCoordinates = {
 			new Point3d(-1.0,-1.0,0.0),
 			new Point3d(1.0,-1.0,0.0),
 			new Point3d(0.0,1.0,0.0),
 			new Point3d(0.0,0.0,2.0)
-			};
+		};
 		
 		int triangles[] = {
 				0,2,1,  // Base – vertices[0], vertices[2], vertices[1]
 				0,1,3,  // Side 1
 				2,0,3,  // Side 2
 				1,2,3   // Side 3
-				};
-		GeometryInfo gi = new GeometryInfo(GeometryInfo.TRIANGLE_ARRAY);
-				gi.setCoordinates(vertexCoordinates);
-				gi.setCoordinateIndices(triangles);
-				NormalGenerator ng = new NormalGenerator();
-				ng.generateNormals(gi);
-				GeometryArray ga = gi.getGeometryArray();
-				Shape3D tetrahedron = new Shape3D(ga,ap_rock);
+		};
 		
-				
-		tg_rock.addChild(tetrahedron);
+		GeometryInfo gi = new GeometryInfo(GeometryInfo.TRIANGLE_ARRAY);
+		gi.setCoordinates(vertexCoordinates);
+		gi.setCoordinateIndices(triangles);
+		
+		NormalGenerator ng = new NormalGenerator();
+		ng.generateNormals(gi);
+		
+		GeometryArray ga = gi.getGeometryArray();
+		Shape3D tetrahedron = new Shape3D(ga,ap_rock);
+		
+		//collision
+		Shape3D redrock = new Shape3D(ga,ap_rock2);
+		
+		Switch colourSwitch = new Switch();
+	    colourSwitch.setCapability(Switch.ALLOW_SWITCH_WRITE);
+	    colourSwitch.addChild(redrock); // child 0
+	    colourSwitch.addChild(tetrahedron); // child 1
+	    colourSwitch.setWhichChild(1);
+	    tg_rock.addChild(colourSwitch);
+	    
+	  //The CollisionBounds for the spheres. 
+	    colourSwitch.setCollisionBounds(new BoundingSphere(new Point3d(0.0,0.0,0.0),0.01f)); 
+	    //Enabled for collision purposes
+	    colourSwitch.setCollidable(true);
+	    
+	    CollisionBehaviour scb = new CollisionBehaviour(tetrahedron, colourSwitch,bounds);
+	    tg.addChild(scb);
 		tg.addChild(tg_rock);		
 		
 		objRoot.addChild(tg);
@@ -447,11 +470,11 @@ public class porprobar extends Applet {
 		
 		public WakeupOnCollisionEntry i_and_pS_criterion;
 
-		public Primitive locom;
+		public Shape3D locom;
 		
 		public Switch colourswitch;
 		
-		public CollisionBehaviour(Primitive thlocom, Switch theSwitch, Bounds theBounds){
+		public CollisionBehaviour(Shape3D thlocom, Switch theSwitch, Bounds theBounds){
 			locom = thlocom;
 	        colourswitch = theSwitch;
 	        setSchedulingBounds(theBounds);
@@ -469,6 +492,7 @@ public class porprobar extends Applet {
 		          WakeupCriterion theCriterion = (WakeupCriterion) criteria.nextElement();
 		          if (theCriterion instanceof WakeupOnCollisionEntry){
 		        	  colourswitch.setWhichChild(0);
+		        	  
 		        	  System.out.println("CRASH!");
 		          }
 		      }
