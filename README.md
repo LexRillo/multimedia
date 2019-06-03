@@ -1,6 +1,6 @@
 # multimedia
 
-
+Exercises on Java3D for the course of Multimedia and Computer Graphics in the University of Leicester 2016/17
 tutorials
 rocket
 https://www.youtube.com/watch?v=ga2fBtNKmrs
