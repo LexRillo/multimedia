@@ -2,6 +2,10 @@
 
 Exercises on Java3D for the course of Multimedia and Computer Graphics in the University of Leicester 2016/17
 
+This project uses Java 3D to create a complete scene of a train on rails that collised with a barrier and changes the properties of the barrier when colliding with it.
+
+---
+
 Some of the sources use to assemble the final project
 
 tutorials
